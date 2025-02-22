@@ -9,7 +9,12 @@ extends Control
 ## [member SceneTree.paused] state.
 
 ## Also sync the [member Control.visible]ity state in editor.
-@export var in_editor := false
+@export var in_editor := false:
+	get:
+		return in_editor
+	set(_value):
+		in_editor = _value
+		_ready()
 
 func _ready():
 	if not in_editor and Engine.is_editor_hint():
