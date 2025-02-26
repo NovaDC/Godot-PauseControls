@@ -12,6 +12,11 @@ extends Button
 ## of this in order for it to process with the tree's expected [member SceneTree.paused] state.
 
 func _ready():
+	var pause_eye := PauseEye.new()
+	add_child(pause_eye)
+	pause_eye.paused.connect(_on_paused)
+	pause_eye.unpaused.connect(_on_unpaused)
+	
 	if not toggle_mode:
 		return
 	
@@ -33,16 +38,6 @@ func _property_get_revert(property: StringName) -> Variant:
 			return PROCESS_MODE_ALWAYS
 	return null
 
-func _notification(what: int):
-	if not toggle_mode:
-		return
-	
-	match(what):
-		NOTIFICATION_PAUSED:
-			button_pressed = false
-		NOTIFICATION_UNPAUSED:
-			button_pressed = true
-
 func _pressed():
 	if toggle_mode:
 		return
@@ -58,3 +53,11 @@ func _toggled(toggled_on: bool):
 	var tree := get_tree()
 	if tree != null:
 		tree.paused = not toggled_on
+
+func _on_paused():
+	if toggle_mode:
+		button_pressed = true
+
+func _on_unpaused():
+	if toggle_mode:
+		button_pressed = false

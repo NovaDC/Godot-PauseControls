@@ -20,6 +20,11 @@ func _ready():
 	if not in_editor and Engine.is_editor_hint():
 		return
 	
+	var pause_eye := PauseEye.new()
+	add_child(pause_eye)
+	pause_eye.paused.connect(show)
+	pause_eye.unpaused.connect(hide)
+	
 	var tree := get_tree()
 	visible = tree != null and tree.paused
 
@@ -34,13 +39,3 @@ func _property_get_revert(property: StringName) -> Variant:
 		"process_mode":
 			return PROCESS_MODE_ALWAYS
 	return null
-
-func _notification(what: int):
-	if not in_editor and Engine.is_editor_hint():
-		return
-	
-	match(what):
-		NOTIFICATION_PAUSED:
-			show()
-		NOTIFICATION_UNPAUSED:
-			hide()
